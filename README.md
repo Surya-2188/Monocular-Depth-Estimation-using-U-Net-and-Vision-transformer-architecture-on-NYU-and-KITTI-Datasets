@@ -1,4 +1,22 @@
-# Monocular Depth Estimation using U-Net on KITTI Dataset
+# Monocular Depth Estimation on KITTI
+
+## Vision Transformer notebook
+
+Open [ViT_Depth_Estimation.ipynb](ViT_Depth_Estimation.ipynb) in Colab with a GPU or in Jupyter with PyTorch, Pillow, NumPy, Matplotlib and scikit-learn installed. Extract [KITTI Eigen Split for Monocular Depth Estimation](https://www.kaggle.com/datasets/aalniak/kitti-eigen-split-for-monocular-depth-estimation) into the notebook's working directory under `data/`, or set `DATA_ROOT` to the extracted directory. Run the notebook from top to bottom.
+
+The model learns from scratch using 16×16 patches, four Transformer encoder blocks and a convolutional upsampling head. It outputs a 256×512 depth map in metres. Training runs for up to 40 epochs, stops after five consecutive epochs without a lower validation MAE, and saves and restores the best weights from `vit_depth_best.pt`. The notebook reports validation MAE and RMSE over pixels with ground-truth measurements.
+
+### Baseline analysis
+
+The original notebook indexed depth files by filename alone, even though frame names repeat across drives. It also split individual frames randomly, which could put neighbouring frames from the same drive into both sets. The ViT notebook pairs frames by drive and frame ID, holds out entire drives, decodes the 16-bit depth values in metres, and excludes missing measurements. The old loss values below are historical. To compare U-Net and ViT, train both on the same corrected split with matching preprocessing and metrics. The validation split is used for checkpoint selection, so report final performance on a separate test split if available.
+
+### Related datasets
+
+- [NYU Depth V2 on Kaggle](https://www.kaggle.com/soumikrakshit/nyu-depth-v2) provides aligned indoor RGB and depth. Use it for a separate indoor experiment with a loader for its format.
+- [KITTI LiDAR Based 2D Depth Images on Kaggle](https://www.kaggle.com/ahmedfawzyelaraby/kitti-lidar-based-2d-depth-images) provides LiDAR-derived targets in the same driving domain. Confirm that you can match corresponding RGB frames and check for overlapping KITTI drives before using it for evaluation.
+- [Virtual KITTI 2](https://europe.naverlabs.com/proxy-virtual-worlds-vkitti-2/) provides synthetic driving scenes with dense depth. It is closer to KITTI's road domain, though the data comes from a renderer and needs a separate loader.
+
+## Original U-Net baseline
 
 ## 1. Project Overview
 
@@ -46,7 +64,7 @@ Explanation:
 
 Dataset: KITTI Eigen Split for Monocular Depth Estimation  
 Source: Kaggle  
-Total Matched Pairs: 3984  
+The original notebook reported 3984 pairs using filename-only matching. The ViT notebook prints the corrected count when run.
 
 ### Dataset Structure
 

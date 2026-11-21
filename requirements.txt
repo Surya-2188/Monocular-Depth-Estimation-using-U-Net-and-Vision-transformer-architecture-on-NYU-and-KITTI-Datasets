@@ -1,0 +1,7 @@
+streamlit>=1.49
+streamlit-image-coordinates>=0.4.1
+torch>=2.4
+numpy
+Pillow
+matplotlib
+streamlit-webrtc>=0.63.0
